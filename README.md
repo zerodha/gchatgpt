@@ -3,8 +3,6 @@
 - `go build -o gchatgpt.bin *.go` to build.
 - Run it somewhere and register `https://your-gchatgpt-url:8000` in GSuite.
 
-## Running the bot
-
 ## Usage
 - Build the binary: `go build -ldflags="-s -w" -o gchatgpt.bin *.go`
 - Run `./gchatgpt.bin -h` to see config flags.
