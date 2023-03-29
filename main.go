@@ -158,7 +158,6 @@ func queryAPI(prompt, prePrompt, model, apiKey string) (string, error) {
 }
 
 func verifyToken(tokenString, projectNum string) error {
-	// tokenString := "eyJhbGciOiJSUzI1NiIsImtpZCI6IjA2ZWEzZDNjOTQxNGIzNGQ3N2Q2NjQwNzU4MGNlYzdlMTBjMGI3ZDMiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiIzNTk3ODE3Mjc1MzIiLCJleHAiOjE2ODAwOTE0NjUsImlhdCI6MTY4MDA4Nzg2NSwiaXNzIjoiY2hhdEBzeXN0ZW0uZ3NlcnZpY2VhY2NvdW50LmNvbSJ9.GgUtiWEPBD3xEsDgQ2U0rWJ3U5iMdgytHnAbeSdeu9EFg8e9ewBjlXSLa5LyR_EeS9Y1mnyX4MD3KYMsHMmR4cbAxUMeZR_Zzo1qEITRu-7ZpKiig043TxoBXpu7BhiivTrDk80wL4T4R_Zicko4P1VRGeQGHTbx1eLtF0bYg9WwKNZHnW2JjXv8l-bKbLRAnKX_ZYQamR6DyJUorSKInTT0ZoOZyISNI7pSqUayewlP0CwMWBKtud5PDAsKu57dyDbJS0AXJoaEnrtoV9QHf5-J7J9Hn9KO7V3Ahhf5hcKLynut5RbMqanb7Qxu0b4-PzeLuHePeUTHIJbBMleG-A"
 	token, err := jwt.Parse(tokenString, getKey)
 	if err != nil {
 		return err
