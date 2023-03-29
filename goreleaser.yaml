@@ -1,0 +1,21 @@
+# .goreleaser.yml
+
+env:
+  - GO111MODULE=on
+  - CGO_ENABLED=0
+
+builds:
+  - binary: gchatgpt.bin
+    id: gchatgpt
+    main: ./
+    goos:
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - "-s -w"
+archives:
+  - format: tar.gz
+    files:
+      - README.md
+      - LICENSE
