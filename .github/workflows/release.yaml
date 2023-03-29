@@ -23,6 +23,6 @@ jobs:
         uses: goreleaser/goreleaser-action@v2
         with:
           version: latest
-          args: --parallelism 1 --rm-dist --skip-validate
+          args: --parallelism 1 --clean --skip-validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
