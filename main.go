@@ -16,6 +16,7 @@ var (
 	botAppID     = os.Getenv("GOOGLE_PROJECT_NUMBER")
 	address      = os.Getenv("ADDRESS")
 	gptModel     = os.Getenv("GPT_MODEL")
+	prePrompt    = os.Getenv("PRE_PROMPT")
 )
 
 func main() {
@@ -59,6 +60,7 @@ func main() {
 		Address:     address,
 		OpenAI:      openAI,
 		JWKVerifier: jwkVerifier,
+		PrePrompt:   prePrompt,
 	}
 
 	app := server.New(cfg)

@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -46,15 +47,17 @@ func (app *App) HandleGChat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userName := message.Message.Sender.DisplayName
+
 	// Cleanup the prompt message. Argument text has a leading space usually.
-	prompt := strings.TrimSpace(message.Message.ArgumentText)
+	prompt := fmt.Sprintf("%s: %s", userName, strings.TrimSpace(message.Message.ArgumentText))
 
 	interactionKey := getInteractionKey(message)
 
 	// Send the prompt to OpenAI and get a response.
 	response, err := app.cfg.OpenAI.RespondWithPrompt(
 		interactionKey,
-		"",
+		app.cfg.PrePrompt,
 		prompt,
 	)
 
