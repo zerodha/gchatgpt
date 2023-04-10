@@ -23,6 +23,7 @@ func (app *App) HandleGChat(w http.ResponseWriter, r *http.Request) {
 	token := strings.Split(bearerToken, " ")
 	err := app.cfg.JWKVerifier.VerifyJWT(app.cfg.BotAppID, token[1])
 	if len(token) != 2 || err != nil {
+		log.Println("Error verifying JWT: ", err)
 		http.Error(w, "Unauthorized", http.StatusForbidden)
 		return
 	}
@@ -30,8 +31,9 @@ func (app *App) HandleGChat(w http.ResponseWriter, r *http.Request) {
 	message := &gchat.Event{}
 	err = json.NewDecoder(r.Body).Decode(&message)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		log.Println(err)
+		log.Println("Error decoding message: ", err)
+		response := gchat.Response{Text: "Sorry, I couldn't decode your message."}
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 
@@ -64,16 +66,16 @@ func (app *App) HandleGChat(w http.ResponseWriter, r *http.Request) {
 	)
 
 	if err != nil {
-		log.Println(err)
-		response := gchat.Response{Text: "Sorry, I didn't understand your message."}
+		log.Println("Error getting response from OpenAI: ", err)
+		response := gchat.Response{Text: "Sorry, I couldn't communicate your message to OpenAI."}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
 
 	out := gchat.Response{Text: response}
 	if err := json.NewEncoder(w).Encode(out); err != nil {
-		log.Println(err)
-		response := gchat.Response{Text: "Sorry, I didn't understand your message."}
+		log.Println("Error encoding response: ", err)
+		response := gchat.Response{Text: "Sorry, I couldn't encode the response to you correctly."}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
