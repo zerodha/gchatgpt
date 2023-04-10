@@ -114,7 +114,8 @@ func NewResponder(opt ResponderOptions) *Responder {
 // responses.
 func (r *Responder) Respond(interactionKey string, prompts []ChatCompletionMessage) (string, error) {
 	// check if we have a cached response
-	if msgs, ok := r.store.Get(interactionKey); ok {
+	msgs, ok := r.store.Get(interactionKey)
+	if ok {
 		prompts = append(msgs, prompts...)
 	}
 
@@ -132,12 +133,14 @@ func (r *Responder) Respond(interactionKey string, prompts []ChatCompletionMessa
 		msgsRecv = append(msgsRecv, msg.Message)
 	}
 
+	prompts = append(prompts, msgsRecv...)
+
 	// if cache size is greater than 10, remove the oldest message
-	if len(msgsRecv) > r.store.maxHistory {
-		msgsRecv = msgsRecv[1:]
+	if len(prompts) > r.store.maxHistory {
+		prompts = prompts[1:]
 	}
 
-	r.store.Set(interactionKey, msgsRecv)
+	r.store.Set(interactionKey, prompts)
 
 	return resp.Choices[0].Message.Content, nil
 }
@@ -146,11 +149,15 @@ func (r *Responder) Respond(interactionKey string, prompts []ChatCompletionMessa
 // responses. It is a utility function that adds the prompt to the prompts.
 func (r *Responder) RespondWithPrompt(interactionKey, prePrompt, prompt string) (string, error) {
 	prompts := []ChatCompletionMessage{}
-	if prePrompt != "" {
-		prompts = append(prompts, ChatCompletionMessage{
-			Role:    RoleSystem,
-			Content: prePrompt,
-		})
+
+	// If there is a cached response, don't send the pre-prompt again.
+	if _, ok := r.store.Get(interactionKey); !ok {
+		if prePrompt != "" {
+			prompts = append(prompts, ChatCompletionMessage{
+				Role:    RoleSystem,
+				Content: prePrompt,
+			})
+		}
 	}
 
 	prompts = append(prompts, ChatCompletionMessage{
