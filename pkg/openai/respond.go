@@ -135,9 +135,10 @@ func (r *Responder) Respond(interactionKey string, prompts []ChatCompletionMessa
 
 	prompts = append(prompts, msgsRecv...)
 
-	// if cache size is greater than 10, remove the oldest message
+	// if cache size is greater than maxHistory, remove the oldest message
+	// but keep the first message as that is the pre-prompt
 	if len(prompts) > r.store.maxHistory {
-		prompts = prompts[1:]
+		prompts = append(prompts[:1], prompts[2:]...)
 	}
 
 	r.store.Set(interactionKey, prompts)

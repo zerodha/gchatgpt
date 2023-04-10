@@ -37,7 +37,7 @@ func main() {
 
 	// Setup openai store. TODO: make configurable
 	ttl := int64(24 * time.Hour) // 1 day
-	maxHistory := 10             // store only 10
+	maxHistory := 20             // store only 10
 
 	store := openai.NewStore(ttl, maxHistory)
 
