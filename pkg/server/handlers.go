@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/zerodhatech/gchatgpt/pkg/gchat"
 )
@@ -81,5 +83,32 @@ func (app *App) HandleGChat(w http.ResponseWriter, r *http.Request) {
 // a temporary implementation. We need to come up with a better way to
 // identify the interaction.
 func getInteractionKey(message *gchat.Event) string {
-	return message.Message.Thread.Name
+	switch message.Message.Space.Type {
+	case gchat.SpaceTypeDM:
+		return message.Message.Space.Name
+	case gchat.SpaceTypeRoom:
+		return message.Message.Thread.Name
+	default:
+		// Return a generated random string for now.
+		return randomString(10)
+	}
+}
+
+func randomString(length int) string {
+	// Define the character set from which to generate the random string
+	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+	// Seed the random number generator
+	rand.Seed(time.Now().UnixNano())
+
+	// Create a byte slice of the specified length
+	randomBytes := make([]byte, length)
+
+	// Fill the byte slice with random characters from the character set
+	for i := 0; i < length; i++ {
+		randomBytes[i] = charset[rand.Intn(len(charset))]
+	}
+
+	// Convert the byte slice to a string and return it
+	return string(randomBytes)
 }
